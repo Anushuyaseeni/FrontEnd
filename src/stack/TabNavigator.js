@@ -9,22 +9,52 @@ import Expenses from '../components/bookDisplay/expenses';
 import Category from '../components/category/category';
 import Settings from '../components/settings/Setting';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {View, Text, Animated} from 'react-native';
+import {View, Text, Animated, Easing} from 'react-native';
 
 const Tab = createBottomTabNavigator();
+
+const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 
 const TabNavigation = () => {
   // fadeAnim will be used as the value for opacity. Initial Value: 0
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
+  // const fadeIn = () => {
+  //   // Will change fadeAnim value to 1 in 5 seconds
+  //   Animated.timing(fadeAnim, {
+  //     toValue: 1,
+  //     duration: 500,
+  //     useNativeDriver: true,
+  //   }).start();
+  // };
+
   const fadeIn = () => {
-    console.log('hiiiiiiiiiiiiiiiiii');
-    // Will change fadeAnim value to 1 in 5 seconds
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 100,
-      useNativeDriver: true,
-    }).start();
+    Animated.loop(
+      // runs the animation array in sequence
+      Animated.sequence([
+        // shift element to the left by 2 units
+        Animated.timing(fadeAnim, {
+          toValue: -60,
+          duration: 50,
+          // easing: Easing.bounce,
+          useNativeDriver: true,
+        }),
+        // shift element to the right by 2 units
+        // Animated.timing(fadeAnim, {
+        //   toValue: 80,
+        //   duration: 50,
+        //   useNativeDriver: true,
+        // }),
+         // bring the element back to its original position
+        Animated.timing(fadeAnim, {
+          toValue: -20,
+          duration: 50,
+          useNativeDriver: true,
+        }),
+      ]),
+      // loops the above animation config 2 times
+      {iterations: 1},
+    ).start();
   };
 
   return (
@@ -33,11 +63,11 @@ const TabNavigation = () => {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: '#7FC4DD',
-          borderRadius: 30,
+          borderRadius: 25,
           height: 80,
           width: '100%',
           borderWidth: 7,
-          marginBottom: -19,
+          marginBottom: -20,
           borderColor: '#7FC4DD',
         },
         tabBarActiveTintColor: '#0B2947',
@@ -63,6 +93,7 @@ const TabNavigation = () => {
           tabBarIconStyle: {marginTop: 15},
           tabBarIcon: ({color, focused}) =>
             focused ? (
+              <Animated.View style={{transform: [{translateY: fadeAnim}]}}>
                 <Icon
                   name="home"
                   color={color}
@@ -73,7 +104,7 @@ const TabNavigation = () => {
                     width: 60,
                     backgroundColor: '#7FC4DD',
                     textAlign: 'center',
-                    marginBottom:50,
+                    marginBottom: 50,
                     paddingTop: 16,
                     shadowColor: 'black',
                     borderWidth: 8,
@@ -81,14 +112,17 @@ const TabNavigation = () => {
                     position: 'relative',
                   }}
                 />
+              </Animated.View>
             ) : (
+              <Animated.View style={{transform: [{translateY: fadeAnim}]}}>
               <Icon
                 name="home"
                 color={color}
                 size={25}
                 style={{marginTop: -30}}
-                // onPress={fadeIn}
+                onPress={fadeIn}
               />
+              </Animated.View>
             ),
         }}
       />
