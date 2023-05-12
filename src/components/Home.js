@@ -1,8 +1,9 @@
 import React, {useState, useRef} from 'react';
-import {View, Text, StatusBar, Animated} from 'react-native';
+import {View, Text, StatusBar, Animated, TouchableOpacity} from 'react-native';
 import {Card, Avatar, Badge} from 'react-native-elements';
 import {ScrollView} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {appColors} from '../theme/appColors';
 
 const Home = () => {
   const [notify, setNotify] = useState(true);
@@ -20,7 +21,7 @@ const Home = () => {
         }),
         // shift element to the right by 2 units
         Animated.timing(fadeAnim, {
-          toValue: 2,
+          toValue: 1,
           duration: 50,
           useNativeDriver: true,
         }),
@@ -32,13 +33,18 @@ const Home = () => {
         }),
       ]),
       // loops the above animation config 2 times
-      { iterations: 3 }
+      {iterations: 3},
     ).start();
-  }
+  };
+  //State variable for switch from expenses to Income or vice-versa
+  const [selectedType, setSelectedType] = useState('expenses');
 
   return (
     <View style={{backgroundColor: '#ffffff', flex: 1}}>
-      <StatusBar barStyle={'light-content'} backgroundColor={'#7FC4DD'} />
+      <StatusBar
+        barStyle={'light-content'}
+        backgroundColor={appColors.primary}
+      />
       <ScrollView>
         <View style={{flex: 1}}>
           <View
@@ -66,23 +72,109 @@ const Home = () => {
               />
             </View>
           </View>
-          <View style={{flex: 1}}>
+
+          <View
+            style={{
+              marginVertical: 20,
+              borderRadius: 100,
+              height: 35,
+              width: 240,
+              marginLeft: 80,
+              borderColor: appColors.borderColor,
+              borderWidth: 1,
+              // elevation:18,
+              backgroundColor: appColors.toggleLightPrimary,
+              flexDirection: 'row', justifyContent:'space-around'
+            }}>
+              <TouchableOpacity
+                onPress={() => setSelectedType('expenses')}
+                style={{
+                  backgroundColor: appColors.primary,
+                  borderColor: appColors.primary,
+                  width: 125,
+                  height: 35,
+                  borderRadius: 100, marginLeft:-18
+                }}>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 'bold',
+                    color: appColors.secondary,
+                    textAlign: 'center',
+                    justifyContent: 'center',
+                    margin: 6,
+                  }}>
+                  Expenses
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{backgroundColor: appColors.toggleLightPrimary}}>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 'bold',
+                    color: appColors.secondary,
+                    textAlign: 'center',
+                    justifyContent: 'center',
+                    marginTop:6, marginRight:15
+                  }}>
+                  Income
+                </Text>
+              </TouchableOpacity>
+            {/* <TouchableOpacity
+              onPress={() => setSelectedType('Income')}
+              style={{
+                backgroundColor: appColors.primary,
+                borderColor: appColors.primary,
+                width: 125,
+                height: 35, borderRadius: 100,
+              }}>
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: 'bold',
+                  color: appColors.secondary,
+                  textAlign: 'center',
+                  justifyContent: 'center',
+                  margin: 6,
+                }}>
+                Expenses
+              </Text>
+            </TouchableOpacity> */}
+          </View>
+
+          {/* <View style={{flex: 1}}> */}
+          <Card
+            containerStyle={{
+              borderRadius: 8,
+              justifyContent: 'center',
+              marginTop: 20,
+              margin: 10,
+              marginBottom: 10,
+              elevation: 18, // For android only
+            }}>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                color: appColors.secondary,
+                marginTop: -9,
+              }}>
+              Monthly Savings
+            </Text>
+          </Card>
+          {/* </View> */}
+
+          <View>
             <Card
               containerStyle={{
                 borderRadius: 8,
                 justifyContent: 'center',
-                marginTop: 20,
-                margin: 10,
-                marginBottom: 10,
+                margin: 15,
                 elevation: 18,
-              }}>
-              <Text
-                style={{fontWeight: 'bold', color: '#0B2947', marginTop: -9}}>
-                Monthly Savings
-              </Text>
-            </Card>
+              }}></Card>
           </View>
-          <Animated.View style={{transform: [{translateX: fadeAnim}]}}>
+
+          {/* <Animated.View style={{transform: [{translateX: fadeAnim}]}}>
             <Icon
               name="home"
               size={25}
@@ -101,7 +193,7 @@ const Home = () => {
               }}
               onPress={fadeIn}
             />
-          </Animated.View>
+          </Animated.View> */}
         </View>
       </ScrollView>
     </View>
