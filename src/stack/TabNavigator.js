@@ -9,6 +9,8 @@ import Category from '../components/category/category';
 import Settings from '../components/settings/Setting';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {View, Text, Animated, Easing} from 'react-native';
+import {appColors} from '../theme/appColors';
+
 
 const TabNavigation = () => {
   const Tab = createBottomTabNavigator();
@@ -24,19 +26,19 @@ const TabNavigation = () => {
         // shift element to the left by 2 units
         Animated.timing(fadeAnim, {
           toValue: -10,
-          duration: 600,
+          duration: 400,
           useNativeDriver: true,
         }),
         // shift element to the right by 2 units
         Animated.timing(fadeAnim, {
           toValue: 0,
-          duration: 600,
+          duration: 400,
           useNativeDriver: true,
         }),
         // bring the element back to its original position
         Animated.timing(fadeAnim, {
           toValue: -10,
-          duration: 600,
+          duration: 400,
           useNativeDriver: true,
         }),
       ]),
@@ -46,18 +48,25 @@ const TabNavigation = () => {
   };
 
   const parallelAnim = () => {
-    Animated.parallel([
-      Animated.timing(animVal,{
-        toValue:-1,
-        duration:1000,
-        useNativeDriver:true
-      }),
-      Animated.timing(animVal,{
-        toValue:0,
-        duration:1000,
-        useNativeDriver:true
-      })
-    ]),{iterations:1}
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(animVal,{
+          toValue:-10,
+          duration:400,
+          useNativeDriver:true
+        }),
+        Animated.timing(animVal,{
+          toValue:0,
+          duration:400,
+          useNativeDriver:true
+        }),
+        Animated.timing(animVal,{
+          toValue:-10,
+          duration:400,
+          useNativeDriver:true
+        })
+      ]),{iterations:1}
+    ).start()
   }
 
   return (
@@ -65,65 +74,65 @@ const TabNavigation = () => {
       screenOptions={({route}) => ({
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#7FC4DD',
+          backgroundColor: appColors.primary,
           borderRadius: 25,
           height: 80,
           width: '100%',
           borderWidth: 7,
           marginBottom: -20,
-          borderColor: '#7FC4DD',
+          borderColor: appColors.primary,
         },
-        tabBarActiveTintColor: '#0B2947',
-        tabBarInactiveTintColor: '#f0eded',
+        tabBarActiveTintColor: appColors.secondary,
+        tabBarInactiveTintColor: appColors.inactiveTintColor,
         tabBarShowLabel: true,
         tabBarLabelPosition: 'below-icon',
-        tabBarIcon: ({color}) => {
+        tabBarIcon: ({color, focused}) => {
           let icon;
           if (route.name == 'Graph') {
-            icon = 'graph-pie';
+            icon = focused ? 'ios-pie-chart' :   'ios-pie-chart-outline';
             return (
               <Animated.View style={{transform: [{translateX: animVal}]}}>
-                <FIcon name={icon} color={color} size={27} style={{marginLeft:-20}} />
+                <IonIcon name={icon} color={color} size={27} style={{marginLeft:-20}} />
               </Animated.View>
             );
           } else if (route.name == 'Setting') {
-            icon = 'ios-settings-outline';
+            icon = focused ? 'ios-settings' : 'ios-settings-outline';
             return (
               // <Animated.View style={{transform: [{translateX: fadeAnim}]}}>
                 <IonIcon name={icon} color={color} size={25} />
               // </Animated.View>
             );
           } else if (route.name == 'Expenses') {
-            icon = 'credit-card-plus-outline';
+            icon = 'plus';
             return (
               <Icon
                 name={icon}
-                color={color}
-                size={25}
+                color={focused ? 'white' : color}
+                size={27}
                 style={{
                   borderRadius: 90,
                   height: 60,
                   width: 60,
-                  backgroundColor: '#7FC4DD',
+                  backgroundColor: focused ? '#0B2947': '#7FC4DD',
                   textAlign: 'center',
                   marginBottom: 50,
                   paddingTop: 16,
                   shadowColor: 'black',
-                  borderWidth: 8,
+                  borderWidth: 5,
                   borderColor: '#ffffff',
                   position: 'relative',
                 }}
               />
             );
           } else if(route.name == 'Home'){
-            icon = 'home'
+            icon = focused ? 'home' : 'home-outline';
             return (
               <Animated.View style={{transform: [{translateX: fadeAnim}]}}>
-                <Icon name={icon} color={color} size={25} />
+                <IonIcon name={icon} color={color} size={25} />
               </Animated.View>
             );
           } else if(route?.name == 'Category') {
-            icon = 'view-grid-plus'
+            icon = focused ? 'view-grid-plus' : 'view-grid-plus-outline'
             return(
               <Icon name={icon} color={color} size={25}/>
             )
@@ -131,8 +140,8 @@ const TabNavigation = () => {
         },
       })}
       initialRouteName="Home">
-      <Tab.Screen name="Home" component={Home} listeners={({}) => ({ tabPress: e => { fadeIn(); }, focus: e => { fadeIn(); }, })} />
-      <Tab.Screen name="Graph" component={CashBook} listeners={({}) => ({tabPress: e => {parallelAnim()}, focus: e => {parallelAnim()} })}/>
+      <Tab.Screen name="Home" component={Home}/>
+      <Tab.Screen name="Graph" component={CashBook}/>
       <Tab.Screen name="Expenses" component={Expenses} />
       <Tab.Screen name="Category" component={Category} />
       <Tab.Screen name="Setting" component={Settings} />
@@ -141,3 +150,7 @@ const TabNavigation = () => {
 };
 
 export default TabNavigation;
+
+//Backup
+{/* <Tab.Screen name="Graph" component={CashBook} listeners={({}) => ({tabPress: e => {parallelAnim()}, focus: e => {parallelAnim()} })}/> */}
+{/* <Tab.Screen name="Home" component={Home} listeners={({}) => ({ tabPress: e => { fadeIn(); }, focus: e => { fadeIn(); }, })} /> */}
